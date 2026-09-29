@@ -1,5 +1,5 @@
 -- Create database and tables
-DROP DATABASE ShopDB;
+DROP DATABASE IF EXISTS ShopDB;
 CREATE DATABASE ShopDB;
 USE ShopDB;
 
@@ -14,22 +14,28 @@ CREATE TABLE Warehouse (
     WarehouseName VARCHAR(50),
     WarehouseAddress VARCHAR(50), 
     CountryID INT,
-	FOREIGN KEY (CountryID) REFERENCES Countries(ID) ON DELETE NO ACTION,
+    FOREIGN KEY (CountryID) REFERENCES Countries(ID) ON DELETE NO ACTION,
     PRIMARY KEY (ID)
 );
 
-CREATE TABLE ProductAmount(
-	ID INT,
-	WarehouseAmount INT,
-	PRIMARY KEY (ID)
-)
+CREATE TABLE Products (
+    ID INT,
+    ProductName VARCHAR(50),
+    PRIMARY KEY (ID)
+);
 
+CREATE TABLE ProductAmount (
+    ID INT,
+    WarehouseAmount INT,
+    PRIMARY KEY (ID)
+);
 
 CREATE TABLE ProductInventory (
     ID INT,
-    ProductName VARCHAR(50),
+    ProductID INT,
     ProductAmountID INT,
     WarehouseID INT,
+    FOREIGN KEY (ProductID) REFERENCES Products(ID) ON DELETE NO ACTION,
     FOREIGN KEY (ProductAmountID) REFERENCES ProductAmount(ID) ON DELETE NO ACTION,
     FOREIGN KEY (WarehouseID) REFERENCES Warehouse(ID) ON DELETE NO ACTION,
     PRIMARY KEY (ID)
@@ -37,24 +43,25 @@ CREATE TABLE ProductInventory (
 
 -- Populate test data
 
-INSERT INTO Countries (ID,Name)
-	VALUES (1, 'Country1');
-INSERT INTO Countries (ID,Name)
-	VALUES (2, 'Country2');
+INSERT INTO Countries (ID, Name)
+    VALUES (1, 'Country1');
+INSERT INTO Countries (ID, Name)
+    VALUES (2, 'Country2');
 
-INSERT INTO Warehouse (ID,WarehouseName,WarehouseAddress,CountryID)
-	VALUES (2, 'Warehouse-1', 'City-1, Street-1',1);
-INSERT INTO Warehouse (ID,WarehouseName,WarehouseAddress,CountryID)
-	VALUES (1, 'Warehouse-2', 'City-2, Street-2',2);
-    
-INSERT INTO ProductAmount (ID,WarehouseAmount)
-	VALUES (1, 2);
-INSERT INTO ProductAmount (ID,WarehouseAmount)
-	VALUES (2, 5);
+INSERT INTO Warehouse (ID, WarehouseName, WarehouseAddress, CountryID)
+    VALUES (2, 'Warehouse-1', 'City-1, Street-1', 1);
+INSERT INTO Warehouse (ID, WarehouseName, WarehouseAddress, CountryID)
+    VALUES (1, 'Warehouse-2', 'City-2, Street-2', 2);
 
-INSERT INTO ProductInventory (ID,ProductName,ProductAmountID,WarehouseID)
-	VALUES (1, 'AwersomeProduct', 1, 1);
-INSERT INTO ProductInventory (ID,ProductName,ProductAmountID,WarehouseID)
-	VALUES (2, 'AwersomeProduct', 2, 2);
+INSERT INTO Products (ID, ProductName)
+    VALUES (1, 'AwersomeProduct');
 
+INSERT INTO ProductAmount (ID, WarehouseAmount)
+    VALUES (1, 2);
+INSERT INTO ProductAmount (ID, WarehouseAmount)
+    VALUES (2, 5);
 
+INSERT INTO ProductInventory (ID, ProductID, ProductAmountID, WarehouseID)
+    VALUES (1, 1, 1, 1);
+INSERT INTO ProductInventory (ID, ProductID, ProductAmountID, WarehouseID)
+    VALUES (2, 1, 2, 2);
